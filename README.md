@@ -5,11 +5,12 @@
 ## ScreenShots
 
 <p align='center'>
-
+<img src='https://user-images.githubusercontent.com/52014318/138629765-b1116022-1613-4e04-8bc9-8560ac22ab58.PNG' width='375'>
+<img src='https://user-images.githubusercontent.com/52014318/138629768-e2113a5b-6348-4c2d-87a2-58eacc05f1ff.PNG' width='375'>
 </p>
 
 <p align='center'>
-
+    <img src='https://user-images.githubusercontent.com/52014318/138629886-62242c2d-f82d-4e77-b657-d02954f397b1.gif' width='475'>
 </p>
 
 ## Install
