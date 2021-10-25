@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Dimensions, TouchableOpacity, View } from "react-native";
 
 import { Fontisto } from "@expo/vector-icons";
@@ -12,6 +12,7 @@ import Animated, {
   interpolate,
   useAnimatedProps,
   useSharedValue,
+  withRepeat,
   withTiming,
 } from "react-native-reanimated";
 
@@ -19,13 +20,15 @@ const { width } = Dimensions.get("screen");
 
 const AnimatedCircle = Animated.createAnimatedComponent(Circle);
 const AnimatedPath = Animated.createAnimatedComponent(Path);
+const AnimatedSvg = Animated.createAnimatedComponent(Svg);
 
 export function Home() {
-  const heighAnimated = { value: 100 };
-  const waveAnimated = { value: 5 };
-
+  const heighAnimated = useSharedValue(100);
+  const waveAnimated = useSharedValue(5);
   const buttonStrokeAnimated = useSharedValue(0);
 
+  const [percentage, setPercentage] = useState(0)
+  
   const buttonProps = useAnimatedProps(() => {
     return {
       cx: 60,
@@ -76,24 +79,43 @@ export function Home() {
     };
   });
 
+  const SVGProps = useAnimatedProps(() => {
+    return {
+      height: heighAnimated.value,
+      viewBox: `0 0 ${width} ${heighAnimated.value}`,
+    };
+  });
+
   function handleDrink() {
     buttonStrokeAnimated.value = 0;
+    waveAnimated.value = 5;
 
     buttonStrokeAnimated.value = withTiming(1, {
       duration: 500,
       easing: Easing.ease,
     });
+    waveAnimated.value = withRepeat(
+      withTiming(17, {
+        duration: 500,
+        easing: Easing.ease,
+      }),
+      2,
+      true
+    );
+
+    heighAnimated.value = withTiming(heighAnimated.value + 100, {
+      duration: 1000,
+      easing: Easing.ease,
+    });
+
+    setPercentage(Math.trunc(heighAnimated.value * 0.1))
   }
 
   return (
     <View style={styles.container}>
-      <Header ml={0} percent={0} />
+      <Header ml={percentage > 0 ? heighAnimated.value : 0} percent={percentage} />
 
-      <Svg
-        width={width}
-        height={heighAnimated.value}
-        viewBox={`0 0 ${width} ${heighAnimated.value}`}
-      >
+      <AnimatedSvg width={width} animatedProps={SVGProps}>
         <AnimatedPath
           animatedProps={firstWaveProps}
           fill={theme.colors.blue100}
@@ -105,7 +127,7 @@ export function Home() {
           fill={theme.colors.blue70}
           transform="translate(0,15)"
         />
-      </Svg>
+      </AnimatedSvg>
 
       <View style={styles.footer}>
         <TouchableOpacity
